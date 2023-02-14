@@ -82,10 +82,10 @@ spec:
       source:
         repoURL: https://github.com/tonetag/argocd.git
         targetRevision: 'main'
-        path: '{{ path }}/./chart'
+        path: '{{ path }}'
         helm:
           valueFiles:
-            - '../values.yaml'
+            - './values.yaml'
       syncPolicy:
         automated:
           prune: true
