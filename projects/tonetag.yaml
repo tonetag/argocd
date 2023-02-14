@@ -1,0 +1,95 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: homelab
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  description: Tonetag Setup
+  destinations:
+    - namespace: '*'
+      server: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  sourceRepos:  
+    - '*'
+...
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: homelab-manifests
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/tonetag/argocd.git
+        revision: ""
+        directories:
+          - path: manifests/*/**
+        requeueAfterSeconds: 20
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: '{{ path[1] }}-{{ path[2] }}'
+      name: manifests-{{ path[1] }}-{{ path[2] }}
+      namespace: argocd
+    spec:
+      project: homelab
+      destination:
+        namespace: '{{ path[1] }}'
+        server: 'https://kubernetes.default.svc'
+      source:
+        repoURL: https://github.com/tonetag/argocd.git
+        targetRevision: 'main'
+        path: '{{ path }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+...
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: helm-apps
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/tonetag/argocd.git
+        revision: ""
+        files:
+          - path: helm/*/**/values.yaml
+        requeueAfterSeconds: 20
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: '{{ path[1] }}-{{ path[2] }}'
+      name: helm-{{ path[1] }}-{{ path[2] }}
+      namespace: argocd
+    spec:
+      project: homelab
+      destination:
+        namespace: '{{ path[1] }}'
+        server: 'https://kubernetes.default.svc'
+      source:
+        repoURL: https://github.com/tonetag/argocd.git
+        targetRevision: 'main'
+        path: '{{ path }}/./chart'
+        helm:
+          valueFiles:
+            - '../values.yaml'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+...
