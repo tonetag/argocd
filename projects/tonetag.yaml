@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: homelab
+  name: tonetag
   namespace: argocd
 spec:
   clusterResourceWhitelist:
@@ -22,7 +22,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: homelab-manifests
+  name: tonetag-manifests
   namespace: argocd
 spec:
   generators:
@@ -39,7 +39,7 @@ spec:
       name: manifests-{{ path[1] }}-{{ path[2] }}
       namespace: argocd
     spec:
-      project: homelab
+      project: tonetag
       destination:
         namespace: '{{ path[1] }}'
         server: 'https://kubernetes.default.svc'
@@ -75,7 +75,7 @@ spec:
       name: helm-{{ path[1] }}-{{ path[2] }}
       namespace: argocd
     spec:
-      project: homelab
+      project: tonetag
       destination:
         namespace: '{{ path[1] }}'
         server: 'https://kubernetes.default.svc'
