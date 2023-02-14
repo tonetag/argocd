@@ -53,7 +53,7 @@ ingress:
         - path: /
           pathType: Prefix
   tls:
-   - secretName: tonetag-tls
+   - secretName: tonetag-cert
      hosts:
        - tonetag.is
 
