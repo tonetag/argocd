@@ -58,7 +58,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: helm-apps
+  name: tonetag-helm
   namespace: argocd
 spec:
   generators:
@@ -72,7 +72,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: '{{ path[1] }}-{{ path[2] }}'
-      name: helm-{{ path[1] }}-{{ path[2] }}
+      name: tonetag-helm-{{ path[1] }}-{{ path[2] }}
       namespace: argocd
     spec:
       project: tonetag
